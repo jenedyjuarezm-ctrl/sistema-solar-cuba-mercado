@@ -1,0 +1,23 @@
+# Datos crudos (pueden ser pesados)
+data/raw/*.csv
+data/raw/*.xlsx
+data/raw/*.json
+
+# Archivos temporales 
+*.tmp
+*.log
+
+# Configuración general
+.vscode/
+
+# Sistema operativo 
+.DS_Store
+Thumbs.db
+
+# Python
+_pycache_/
+*.pyc
+
+# Entornos virtuales
+venv/
+env/

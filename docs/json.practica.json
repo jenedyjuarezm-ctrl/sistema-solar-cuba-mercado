@@ -1,0 +1,30 @@
+{"proyecto":"Mercado inmobiliario en Cuba ",
+ "estudiante":"Jenedy", 
+ "fecha":2026,
+ "activo": true,
+ "avance": null,
+ "municipios":["Centro Habana","Vedado","Playa","Habana Vieja"],
+ "viviendas":[
+    {
+        "municipio":"Centro Habana",
+        "precio": 25000,
+        "habitaciones":3,
+        "metros":85,
+        "vende":true                    
+ },
+  {
+    "municipio": "Vedado",
+    "precio": 45000,
+    "habitaciones":2,
+    "metros": 70,
+    "vende":false
+        
+  }
+ ],
+  "notas":{
+    "fecha":"2026-09-21",
+    "observacion": "Primera practica en JSON",
+    "aprendizaje":"Los datos estructurados permiten analisis claros"
+  }
+
+}
