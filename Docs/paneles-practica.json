@@ -1,0 +1,15 @@
+{"proyecto" : "Paneles solares en Cuba " , 
+"estudiante": "Jenedy",
+ "instalaciones": [
+    {"provincia": "La Habana", "año": 2024, "capacidad kw": 50,
+    "tipo_panel": "monocristalino", "eficiencia": 21.5, "costo_USD": 35000,
+    "tipo_usuario": "comercial"},
+    {"provincia": "Santiago_de_Cuba", "año":2024 , "capacidad kw":30, "tipo_panel": "policristalino",
+     "eficiencia":17.5, "costo_USD":22000 , "tipo_usuario": "residencial"},
+    {"provincia": "Holguin", "año": 2023, "capacidad kw": 20,"tipo_panel":"monocristalino",
+     "eficiencia": 20.8, "costo_USD":15000, "tipo_usuario":"residencial"}
+    
+], "resumen": {"capacidad_total_kw":100, "costo_total_usd":72000,"provincias_instalaciones":3},
+   "notas": "Datos ficticios para practicar en JSON",
+   "fecha": "2026-10-9", "proposito": "ejercicio de estructura de JSON"
+    }

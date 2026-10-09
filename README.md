@@ -1,7 +1,7 @@
-# Proyecto panales solares en Cuba
+# Proyecto sistemas de paneles solares en Cuba
 
 ## Descripción 
- Analísis del desarrollo e impacto de la energía fotovoltaica en Cuba durante el período 2020-2026, con enfoque en capacidad instalada y adopción por regiones.
+ Analísis del desarrollo e impacto de los sistemas de la energia solar fotovoltaica en Cuba durante el período 2020-2026, con enfoque en capacidad instalada, la eficiencia tecnica , entre otros factores a analizar
 
  ## Autora 
  Jenedy - Estudiante de 1er año de Ciencia de Datos 
@@ -10,16 +10,16 @@
  Fase 1: Diseño metodológico (completado)
  Fase 2: Captura de datos (proximámente)
 
-## Objetivo
- 1. Describir la evolución de la capacidad solar 
+## Objetivos
+ 1. Analizar la evolución de la capacidad instalada 
  2. Identificar factores que influyen en la eficiencia
  3. Analizar costos y retorno de inversión 
  4. Comparar regiones según potencial solar
-
+ 
 ## Estructura del repositorio 
 - ´data´/raw - datasets originales 
 - ´data´/clean - datasets procesados
-- ´docs´ - documentación , preguntas , metodología
+- ´docs´ - documentación
 - ´journal´ - bitácora diaria 
 - ´notebooks´ - analísis en python
 - ´scripts´ - código python auxiliar
@@ -32,7 +32,8 @@
 - Open Code
 
 ## Metodología 
-Enfoque mixto : analísis cuantitativo de datos oficiales , entrevistas cualitativas a técnicos y usuarios
+Enfoque mixto : (cuantitativo y cualitativo) con alcance descriptivo-exploratorio
+
 
 ## Ética 
 - Cita rigurosa de fuentes 
@@ -42,3 +43,4 @@ Enfoque mixto : analísis cuantitativo de datos oficiales , entrevistas cualitat
 ## Licencia 
 Proyecto académico - uso educativo 
 
+Última actualización 2026-10-08
