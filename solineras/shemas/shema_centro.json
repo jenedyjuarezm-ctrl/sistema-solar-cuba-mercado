@@ -1,0 +1,54 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Encuesta Centro de Trabajo",
+  "type": "object",
+  "required": ["id_centro", "fecha_encuesta", "seccion_a"],
+  "properties": {
+    "id_centro": { "type": "string", "pattern": "^CEN-[0-9]{3,}$" },
+    "fecha_encuesta": { "type": "string", "format": "date" },
+    "seccion_a": {
+      "type": "object",
+      "required": ["nombre", "ubicacion", "anio_puesta_marcha"],
+      "properties": {
+        "nombre": { "type": "string" },
+        "tipo_institucion": {
+          "type": ["string", "null"],
+          "enum": ["empresa_estatal", "empresa_privada", "educativa", "salud", "administrativa", "otro", null]
+        },
+        "ubicacion": { "type": "string" },
+        "anio_puesta_marcha": { "type": "integer", "minimum": 1970 },
+        "cantidad_trabajadores": { "type": ["integer", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_b": {
+      "type": "object",
+      "properties": {
+        "potencia_pico_kwp": { "type": ["number", "null"], "minimum": 0 },
+        "num_paneles": { "type": ["integer", "null"], "minimum": 0 },
+        "capacidad_baterias_kwh": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_c": { "type": "object" },
+    "seccion_d": {
+      "type": "object",
+      "properties": {
+        "consumo_total_anual_kwh": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_f": {
+      "type": "object",
+      "properties": {
+        "costo_instalacion": { "type": ["number", "null"], "minimum": 0 },
+        "ahorro_mensual": { "type": ["number", "null"], "minimum": 0 },
+        "retorno_anios": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_g": {
+      "type": "object",
+      "properties": {
+        "satisfaccion": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "recomendaria": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}
