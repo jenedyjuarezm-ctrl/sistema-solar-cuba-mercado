@@ -1,0 +1,67 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Encuesta Solinera",
+  "type": "object",
+  "required": ["id_solinera", "fecha_encuesta", "seccion_a"],
+  "properties": {
+    "id_solinera": { "type": "string", "pattern": "^SOL-[0-9]{3,}$" },
+    "fecha_encuesta": { "type": "string", "format": "date" },
+    "seccion_a": {
+      "type": "object",
+      "required": ["nombre", "ubicacion", "anio_puesta_marcha", "tipo_instalacion"],
+      "properties": {
+        "nombre": { "type": "string", "minLength": 2 },
+        "ubicacion": { "type": "string" },
+        "anio_puesta_marcha": { "type": "integer", "minimum": 1970, "maximum": 2100 },
+        "tipo_instalacion": {
+          "type": "string",
+          "enum": ["fotovoltaica_aislada", "fotovoltaica_conectada_red", "hibrida"]
+        },
+        "area_total_m2": { "type": ["number", "null"], "minimum": 0 },
+        "tipo_terreno": { "type": ["string", "null"], "enum": ["techo", "suelo", "mixto", null] }
+      }
+    },
+    "seccion_b": {
+      "type": "object",
+      "properties": {
+        "num_paneles": { "type": ["integer", "null"], "minimum": 0 },
+        "potencia_pico_kwp": { "type": ["number", "null"], "minimum": 0 },
+        "tecnologia_paneles": {
+          "type": ["string", "null"],
+          "enum": ["monocristalino", "policristalino", "capa_fina", "otro", null]
+        },
+        "num_inversores": { "type": ["integer", "null"], "minimum": 0 },
+        "capacidad_baterias_kwh": { "type": ["number", "null"], "minimum": 0 },
+        "tipo_baterias": { "type": ["string", "null"], "enum": ["litio", "plomo_acido", "otro", null] },
+        "seguimiento_solar": { "type": ["string", "null"], "enum": ["eje_unico", "doble_eje", "ninguno", null] },
+        "conexion_red": { "type": ["string", "null"], "enum": ["monofasica", "trifasica", null] },
+        "voltaje_operacion_v": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_c": { "type": "object" },
+    "seccion_d": {
+      "type": "object",
+      "properties": {
+        "consumo_total_anual_kwh": { "type": ["number", "null"], "minimum": 0 },
+        "consumo_promedio_diario_kwh": { "type": ["number", "null"], "minimum": 0 },
+        "venta_excedentes": { "type": ["boolean", "null"] }
+      }
+    },
+    "seccion_e": {
+      "type": "object",
+      "properties": {
+        "calcula_pr": { "type": ["boolean", "null"] },
+        "pr_promedio": { "type": ["number", "null"], "minimum": 0, "maximum": 1 },
+        "fallas_ultimo_anio": { "type": ["boolean", "null"] }
+      }
+    },
+    "seccion_f": {
+      "type": "object",
+      "properties": {
+        "satisfaccion": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "desafios": { "type": ["array", "null"], "items": { "type": "string" } },
+        "reduce_co2": { "type": ["boolean", "null"] }
+      }
+    }
+  }
+}
