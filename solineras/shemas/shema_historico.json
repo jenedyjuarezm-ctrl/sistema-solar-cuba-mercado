@@ -1,0 +1,15 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Registro Histórico",
+  "type": "object",
+  "required": ["id_solinera", "timestamp", "produccion_kwh", "consumo_kwh"],
+  "properties": {
+    "id_solinera": { "type": "string" },
+    "timestamp": { "type": "string", "format": "date-time" },
+    "produccion_kwh": { "type": "number", "minimum": 0 },
+    "consumo_kwh": { "type": "number", "minimum": 0 },
+    "irradiancia_wm2": { "type": ["number", "null"], "minimum": 0 },
+    "temp_amb_c": { "type": ["number", "null"] },
+    "humedad_rel": { "type": ["number", "null"], "minimum": 0, "maximum": 100 }
+  }
+}
