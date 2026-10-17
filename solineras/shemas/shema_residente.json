@@ -1,0 +1,50 @@
+{
+  "$schema": "http://json-schema.org/draft-07/schema#",
+  "title": "Encuesta Residente",
+  "type": "object",
+  "required": ["id_residente", "fecha_encuesta", "seccion_a"],
+  "properties": {
+    "id_residente": { "type": "string", "pattern": "^RES-[0-9]{3,}$" },
+    "fecha_encuesta": { "type": "string", "format": "date" },
+    "seccion_a": {
+      "type": "object",
+      "properties": {
+        "ubicacion": { "type": "string" },
+        "tipo_vivienda": { "type": ["string", "null"], "enum": ["casa", "apartamento", "edificio", null] },
+        "cantidad_personas": { "type": ["integer", "null"], "minimum": 1 },
+        "anio_instalacion": { "type": ["integer", "null"], "minimum": 1970 }
+      }
+    },
+    "seccion_b": {
+      "type": "object",
+      "properties": {
+        "potencia_instalada_w": { "type": ["number", "null"], "minimum": 0 },
+        "num_paneles": { "type": ["integer", "null"], "minimum": 0 },
+        "capacidad_baterias_kwh": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_c": {
+      "type": "object",
+      "properties": {
+        "consumo_mensual_kwh": { "type": ["number", "null"], "minimum": 0 },
+        "cubre_toda_demanda": { "type": ["string", "null"], "enum": ["si", "parcial", "respaldo", null] },
+        "ahorro_mensual": { "type": ["number", "null"], "minimum": 0 }
+      }
+    },
+    "seccion_d": {
+      "type": "object",
+      "properties": {
+        "costo_instalacion": { "type": ["number", "null"], "minimum": 0 },
+        "recomendaria": { "type": ["boolean", "null"] }
+      }
+    },
+    "seccion_e": {
+      "type": "object",
+      "properties": {
+        "motivacion": { "type": ["array", "null"], "items": { "type": "string" } },
+        "satisfaccion": { "type": ["integer", "null"], "minimum": 1, "maximum": 5 },
+        "dificultades": { "type": ["array", "null"], "items": { "type": "string" } }
+      }
+    }
+  }
+}
