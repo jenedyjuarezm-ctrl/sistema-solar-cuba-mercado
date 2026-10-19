@@ -1,0 +1,72 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<title>Encuesta Centro - CEN-___</title>
+<style>
+  body { font-family: Arial, sans-serif; font-size: 11pt; line-height: 1.4; margin: 20px; }
+  h1 { text-align: center; font-size: 16pt; }
+  h2 { font-size: 13pt; border-bottom: 1px solid #000; margin-top: 20px; }
+  table { width: 100%; border-collapse: collapse; margin: 10px 0; }
+  th, td { border: 1px solid #000; padding: 4px; text-align: left; }
+  th { background: #eee; }
+  .field { margin: 5px 0; }
+  .header-box { border: 2px solid #000; padding: 10px; margin-bottom: 20px; background: #f9f9f9; }
+  input[type="text"], input[type="number"], input[type="date"] { border: none; border-bottom: 1px solid #000; width: 200px; }
+  .small-input { width: 80px; }
+  .no-print { padding: 10px; font-size: 14px; margin-bottom: 20px; background: #2196F3; color: white; border: none; cursor: pointer; }
+  @media print {
+    .no-print { display: none; }
+    body { margin: 0.5in; }
+    input { border-bottom: 1px solid #000; }
+  }
+</style>
+</head>
+<body>
+
+<button class="no-print" onclick="window.print()">🖨️ Imprimir / Guardar como PDF</button>
+
+<div class="header-box">
+  <strong>ID CENTRO:</strong> CEN-<input type="number" class="small-input" placeholder="001"><br>
+  <strong>Fecha de encuesta:</strong> <input type="date"><br>
+  <strong>Encuestador:</strong> <input type="text" style="width:300px;"><br>
+  <strong>Consentimiento informado:</strong> <label><input type="checkbox"> Sí, acepta</label> <label><input type="checkbox"> No acepta</label>
+</div>
+
+<h1>ENCUESTA — CENTRO DE TRABAJO</h1>
+<p><em>Datos exclusivos para fines académicos. Los datos serán anonimizados.</em></p>
+
+<h2>SECCIÓN A: DATOS GENERALES</h2>
+<div class="field">1. Nombre del centro: <input type="text" style="width:300px;"></div>
+<div class="field">2. Tipo de institución: <label><input type="checkbox"> Empresa estatal</label> <label><input type="checkbox"> Privada</label> <label><input type="checkbox"> Educativa</label> <label><input type="checkbox"> Salud</label> <label><input type="checkbox"> Administrativa</label></div>
+<div class="field">3. Ubicación: <input type="text" style="width:300px;"></div>
+<div class="field">4. Año puesta en marcha: <input type="number" class="small-input"></div>
+<div class="field">5. Cantidad de trabajadores: <input type="number" class="small-input"></div>
+
+<h2>SECCIÓN B: CARACTERÍSTICAS TÉCNICAS</h2>
+<div class="field">6. Tipo instalación: <label><input type="checkbox"> Aislada</label> <label><input type="checkbox"> Conectada a red</label> <label><input type="checkbox"> Híbrida</label></div>
+<div class="field">7. Número paneles: <input type="number" class="small-input"></div>
+<div class="field">8. Potencia pico (kWp): <input type="number" class="small-input"></div>
+<div class="field">9. Capacidad baterías (kWh): <input type="number" class="small-input"></div>
+
+<h2>SECCIÓN C: CONSUMO Y PRODUCCIÓN</h2>
+<div class="field">10. Consumo anual (kWh): <input type="number" class="small-input"></div>
+<div class="field">11. Consumo diario (kWh/día): <input type="number" class="small-input"></div>
+<div class="field">12. ¿Cubre toda la demanda?: <label><input type="checkbox"> Sí</label> <label><input type="checkbox"> Parcial</label> <label><input type="checkbox"> Solo respaldo</label></div>
+
+<h2>SECCIÓN D: ECONÓMICOS</h2>
+<div class="field">13. Costo de instalación: <input type="number" class="small-input"></div>
+<div class="field">14. Ahorro mensual: <input type="number" class="small-input"></div>
+<div class="field">15. Retorno calculado: <label><input type="checkbox"> Sí</label> <label><input type="checkbox"> No</label> | Años: <input type="number" class="small-input"></div>
+
+<h2>SECCIÓN E: PERCEPCIÓN</h2>
+<div class="field">16. Satisfacción (1–5): <label><input type="radio" name="sat"> 1</label> <label><input type="radio" name="sat"> 2</label> <label><input type="radio" name="sat"> 3</label> <label><input type="radio" name="sat"> 4</label> <label><input type="radio" name="sat"> 5</label></div>
+<div class="field">17. Recomendaría: <label><input type="checkbox"> Sí</label> <label><input type="checkbox"> No</label></div>
+
+<div class="field" style="margin-top:30px;">
+  Firma del encuestado: _________________________ Fecha: ____/____/______<br><br>
+  Firma del encuestador: _________________________ Fecha: ____/____/______
+</div>
+
+</body>
+</html>
