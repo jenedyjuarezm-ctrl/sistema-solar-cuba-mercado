@@ -1,20 +1,49 @@
-# Core (imprescindible)
+# ==========================================
+# LIBRERÍAS CORE (Análisis de datos)
+# ==========================================
 pandas>=2.0,<3.0
 numpy>=1.24,<2.0
-matplotlib>=3.7
 scipy>=1.10
-seaborn>=0.12
 pyarrow>=12.0
-scikit-learn>=1.3
-jsonschema>=4.17
 
-# Notebooks en VS Code
+# ==========================================
+# VISUALIZACIÓN DE DATOS
+# ==========================================
+matplotlib>=3.7
+seaborn>=0.12
+plotly>=5.18
+
+# ==========================================
+# MACHINE LEARNING
+# ==========================================
+scikit-learn>=1.3
+
+# ==========================================
+# LECTURA DE ARCHIVOS Y VALIDACIÓN
+# ==========================================
+jsonschema>=4.17
+openpyxl>=3.1.2
+xlrd>=2.0.1
+
+# ==========================================
+# NOTEBOOKS (Jupyter)
+# ==========================================
 jupyter>=1.0
 ipykernel>=6.0
 
-# Dashboard (opcional)
+# ==========================================
+# DASHBOARD INTERACTIVO
+# ==========================================
 streamlit>=1.30
-plotly>=5.18
 
-# Reportes PDF (opcional)
+# ==========================================
+# GENERACIÓN DE REPORTES PDF
+# ==========================================
 reportlab>=4.0
+
+# ==========================================
+# WEB SCRAPING (Revolico)
+# ==========================================
+requests>=2.31.0
+beautifulsoup4>=4.12.2
+lxml>=4.9.3
