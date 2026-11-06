@@ -1,0 +1,20 @@
+# Journal — 25 de Octubre de 2026
+
+## 🎯 Objetivo del día
+- Analizar la estrategia de recolección de datos primarios.
+- Redactar los formularios de entrevista.
+
+## ✅ Hecho hoy
+- Se definieron 3 formularios HTML para la recolección de campo:
+  1. `formulario_solinera.html`
+  2. `formulario_centro.html`
+  3. `formulario_residente.html`
+- Se incorporó la sección de consentimiento informado y firmas.
+- Se debatió sobre cómo digitalizar los datos: pasarlos de PDF a JSONL usando Python.
+
+## 🚧 Problemas / Bloqueos
+- El acceso a los centros de trabajo estatales parece que será muy difícil. Nos han advertido que no dan información por "cuestiones de seguridad".
+- Hemos tenido que redefinir el concepto de "solineras": no todas son iguales; algunas son grandes parques solares y otras son pequeños puntos de carga comunales.
+
+## 💡 Notas
+- La estrategia será usar la técnica de "bola de nieve" para las casas y aprovechar los contactos familiares para los centros estatales.
