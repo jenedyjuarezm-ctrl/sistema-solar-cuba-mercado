@@ -1,45 +1,64 @@
-"""Ejecuta todo el pipeline (Limpieza + Análisis + Reporte) en orden."""
-import subprocess
-import sys
+"""
+Genera un reporte ejecutivo rápido por consola basado en el dataset consolidado.
+No genera PDFs para evitar fallos por falta de gráficos temporales.
+"""
 from pathlib import Path
+import pandas as pd
 
-BASE = Path(__file__).parent
+DATA = Path(__file__).parent.parent / "data"
+CLEAN = DATA / "clean"
 
-PASOS = [
-    # FASE 1: Limpieza y Procesamiento
-    ("1/8 Extraer ONEI",         [sys.executable, str(BASE / "extraer_onei.py")]),
-    ("2/8 Limpiar NASA",         [sys.executable, str(BASE / "limpiar_nasa.py")]),
-    ("3/8 Consolidar",           [sys.executable, str(BASE / "consolidar.py")]),
-    
-    # FASE 2: Análisis Estadístico y Visual
-    ("4/8 Análisis Descriptivo", [sys.executable, str(BASE / "analisis_descriptivo.py")]),
-    ("5/8 Análisis Comparativo", [sys.executable, str(BASE / "analisis_comparativo.py")]),
-    ("6/8 Análisis Cualitativo", [sys.executable, str(BASE / "analisis_cualitativo.py")]),
-    ("7/8 Correlaciones",        [sys.executable, str(BASE / "correlaciones.py")]),
-    
-    # FASE 3: Reporte Final
-    ("8/8 Reporte Ejecutivo",    [sys.executable, str(BASE / "reporte.py")]),
-]
+def generar_reporte():
+    f = CLEAN / "encuestas_consolidadas.parquet"
+    if not f.exists():
+        print("⚠️ No existe el archivo consolidado. Ejecuta consolidar.py primero.")
+        return
 
-def main():
-    print("==============================================")
-    print("🚀 INICIANDO PIPELINE COMPLETO DEL PROYECTO")
-    print("==============================================")
+    df = pd.read_parquet(f)
     
-    for nombre, cmd in PASOS:
-        print(f"\n>>> Ejecutando: {nombre} <<<")
-        try:
-            # check=True detiene el proceso si el script devuelve un error
-            subprocess.run(cmd, check=True)
-        except subprocess.CalledProcessError:
-            print(f"\n❌ ERROR en el paso: {nombre}.")
-            print("Revisa el mensaje de error de arriba para solucionarlo.")
-            return 1
-            
-    print("\n==============================================")
-    print("✅ PIPELINE FINALIZADO CON ÉXITO")
-    print("==============================================")
-    return 0
+    print("\n" + "="*50)
+    print("📊 REPORTE EJECUTIVO - TRANSICIÓN SOLAR EN CUBA")
+    print("="*50)
+    
+    # 1. Resumen por tipo de entidad
+    print("\n--- 1. CANTIDAD DE ENTIDADES ANALIZADAS ---")
+    conteo = df["tipo_entidad"].value_counts()
+    for tipo, cantidad in conteo.items():
+        print(f"  - {tipo.title()}: {cantidad} registros")
+
+    # 2. KPIs de Residentes (Datos primarios)
+    print("\n--- 2. INDICADORES CLAVE (RESIDENTES) ---")
+    df_res = df[df["tipo_entidad"] == "residente"]
+    if not df_res.empty:
+        pot_media = df_res["potencia_pico_kwp"].median()
+        bat_media = df_res["capacidad_baterias_kwh"].median()
+        print(f"  - Potencia Mediana Instalada: {pot_media:.2f} kWp")
+        print(f"  - Batería Mediana: {bat_media:.2f} kWh")
+    else:
+        print("  No hay datos de residentes.")
+
+    # 3. KPIs de la ONEI (Macro)
+    print("\n--- 3. CONTEXTO MACRO (ONEI 2020-2022) ---")
+    onei_path = CLEAN / "onei_generacion.parquet"
+    if onei_path.exists():
+        onei = pd.read_parquet(onei_path)
+        caida = onei["gen_total_gwh"].iloc[-1] - onei["gen_total_gwh"].iloc[0]
+        print(f"  - Variación de Generación Total (2020-2022): {caida:,.0f} GW·h")
+    else:
+        print("  No hay datos de la ONEI.")
+
+    # 4. Correlaciones Clima (NASA)
+    print("\n--- 4. CORRELACIONES CLIMÁTICAS ---")
+    corr_path = DATA / "analisis" / "correlaciones_clima.csv"
+    if corr_path.exists():
+        corr = pd.read_csv(corr_path)
+        for _, row in corr.iterrows():
+            print(f"  - {row['variable_climatica']}: rho = {row['rho']} (p={row['p_valor']})")
+    else:
+        print("  No se han generado las correlaciones aún.")
+
+    print("\n" + "="*50)
+    print("✅ Reporte finalizado.")
 
 if __name__ == "__main__":
-    sys.exit(main())
+    generar_reporte()
