@@ -1,150 +1,134 @@
-"""Dashboard interactivo de solineras con Streamlit."""
-import json
-from pathlib import Path
-
+"""
+Dashboard interactivo verificado para el análisis de energía solar en Cuba.
+Ejecutar con: streamlit run solineras/dashboard.py
+"""
 import pandas as pd
 import plotly.express as px
 import streamlit as st
+from pathlib import Path
+
+st.set_page_config(page_title="Análisis Solar Cuba", page_icon="☀️", layout="wide")
 
 BASE = Path(__file__).parent.parent
 DATA = BASE / "data"
 
-st.set_page_config(page_title="Solinera Dashboard", layout="wide", page_icon="☀️")
-
-
 @st.cache_data
-def cargar_encuestas():
-    p = DATA / "clean" / "encuestas_consolidadas.parquet"
-    if not p.exists():
-        return pd.DataFrame()
-    return pd.read_parquet(p)
-
-
-@st.cache_data
-def cargar_onei():
-    p = DATA / "raw" / "externas" / "onei_anuario.csv"
-    if not p.exists():
-        return pd.DataFrame()
-    return pd.read_csv(p)
-
+def cargar_datos():
+    enc, onei, nasa = pd.DataFrame(), pd.DataFrame(), pd.DataFrame()
+    
+    p_enc = DATA / "clean" / "encuestas_consolidadas.parquet"
+    if p_enc.exists(): enc = pd.read_parquet(p_enc)
+    
+    p_onei = DATA / "clean" / "onei_generacion.parquet"
+    if p_onei.exists(): onei = pd.read_parquet(p_onei)
+    
+    p_nasa = DATA / "clean" / "nasa_power_limpio.parquet"
+    if p_nasa.exists(): nasa = pd.read_parquet(p_nasa)
+    
+    return enc, onei, nasa
 
 def main():
-    st.title("☀️ Dashboard - Sistemas Fotovoltaicos en Cuba")
-    st.markdown("**Proyecto de ciencia de datos 2020–2026**")
-
-    df = cargar_encuestas()
-    onei = cargar_onei()
-
+    st.title("☀️ Transición Energética en Cuba (2020-2026)")
+    st.markdown("Análisis de la adopción solar y la crisis eléctrica.")
+    
+    df, onei, nasa = cargar_datos()
+    
     if df.empty and onei.empty:
-        st.warning(
-            "No hay datos cargados. Ejecuta primero:\n"
-            "```\npython solineras/extraer_onei.py\npython solineras/consolidar.py\n```"
-        )
+        st.error("⚠️ No se encontraron datos. Ejecuta `python solineras/run_all.py` primero.")
         return
 
+    # Sidebar
     st.sidebar.header("Filtros")
-    if not df.empty and "tipo_entidad" in df.columns:
-        tipos = ["Todos"] + df["tipo_entidad"].dropna().unique().tolist()
-        tipo_sel = st.sidebar.selectbox("Tipo de entidad", tipos)
+    if not df.empty:
+        tipos = ["Todos"] + df["tipo_entidad"].unique().tolist()
+        tipo_sel = st.sidebar.selectbox("Tipo de Entidad", tipos)
         if tipo_sel != "Todos":
             df = df[df["tipo_entidad"] == tipo_sel]
+        st.sidebar.markdown(f"**Registros filtrados:** {len(df)}")
 
-    if not df.empty and "ubicacion" in df.columns:
-        provincias = ["Todas"] + sorted(df["ubicacion"].dropna().astype(str).unique().tolist())
-        prov_sel = st.sidebar.selectbox("Ubicacion", provincias)
-        if prov_sel != "Todas":
-            df = df[df["ubicacion"] == prov_sel]
-
-    st.sidebar.markdown(f"**Registros filtrados:** {len(df)}")
-
-    tab1, tab2, tab3, tab4, tab5, tab6, tab7 = st.tabs([
-        "📈 Series temporales",
-        "🕐 Patrones",
-        "🔗 Correlaciones",
-        "🧪 Avanzado",
-        "🔮 Pronóstico",
-        "🔋 Optimización",
-        "📋 Datos",
+    # Pestañas
+    tab1, tab2, tab3, tab4 = st.tabs([
+        "📊 Entrevistas (Campo)", 
+        "📈 Crisis (ONEI)", 
+        "🔗 Clima y Correlaciones (NASA)",
+        "📋 Tabla de Datos"
     ])
 
+    # --- TAB 1: ENTREVISTAS ---
     with tab1:
-        st.header("Series temporales — ONEI 2020–2024")
-        if not onei.empty:
-            indicadores = onei["indicador"].unique().tolist()
-            sel = st.selectbox("Indicador", indicadores)
-            s = onei[onei["indicador"] == sel].sort_values("anio")
-            fig = px.line(s, x="anio", y="valor", markers=True, title=sel)
-            st.plotly_chart(fig, use_container_width=True)
+        st.header("Resultados de la Investigación de Campo")
+        if not df.empty:
+            # Limpiar nulos solo para graficar
+            df_plot = df.dropna(subset=['potencia_pico_kwp', 'capacidad_baterias_kwh'])
+            
+            col1, col2 = st.columns(2)
+            with col1:
+                st.subheader("Potencia Instalada (kWp)")
+                fig1 = px.box(df_plot, x="tipo_entidad", y="potencia_pico_kwp", color="tipo_entidad")
+                st.plotly_chart(fig1, use_container_width=True)
+            with col2:
+                st.subheader("Baterías (kWh)")
+                fig2 = px.box(df_plot, x="tipo_entidad", y="capacidad_baterias_kwh", color="tipo_entidad")
+                st.plotly_chart(fig2, use_container_width=True)
+        else:
+            st.info("No hay datos de entrevistas.")
 
+    # --- TAB 2: SERIES TEMPORALES (ONEI) ---
     with tab2:
-        st.header("Patrones por tipo de entidad")
-        if not df.empty and "tipo_entidad" in df.columns:
-            vars_num = ["potencia_pico_kwp", "consumo_total_anual_kwh", "pr_promedio"]
-            vars_num = [v for v in vars_num if v in df.columns]
-            if vars_num:
-                var = st.selectbox("Variable", vars_num)
-                fig = px.box(df, x="tipo_entidad", y=var, color="tipo_entidad")
-                st.plotly_chart(fig, use_container_width=True)
-
-    with tab3:
-        st.header("Correlaciones")
-        if not df.empty:
-            vars_num = df.select_dtypes(include="number").columns.tolist()
-            if len(vars_num) >= 2:
-                x = st.selectbox("Eje X", vars_num, index=0)
-                y = st.selectbox("Eje Y", vars_num, index=1)
-                color = "tipo_entidad" if "tipo_entidad" in df.columns else None
-                fig = px.scatter(df, x=x, y=y, color=color)
-                st.plotly_chart(fig, use_container_width=True)
-
-    with tab4:
-        st.header("Análisis avanzado")
-        if not df.empty:
-            st.subheader("Distribución de variables")
-            var = st.selectbox("Variable numérica",
-                               df.select_dtypes(include="number").columns.tolist(),
-                               key="adv")
-            fig = px.histogram(df, x=var, nbins=20)
-            st.plotly_chart(fig, use_container_width=True)
-
-    with tab5:
-        st.header("Pronóstico")
+        st.header("Evolución del Sistema Eléctrico Nacional (2020-2022)")
         if not onei.empty:
-            s = onei[onei["indicador"] == "eolica_fotovoltaica_gwh"].sort_values("anio")
-            if len(s) >= 2:
-                from sklearn.linear_model import LinearRegression
-                import numpy as np
-                X = s["anio"].values.reshape(-1, 1)
-                y = s["valor"].values
-                m = LinearRegression().fit(X, y)
-                fut = np.array([[2025], [2026], [2027]])
-                pred = m.predict(fut)
-                st.write(f"R² = {m.score(X, y):.3f}")
-                forecast = pd.DataFrame({"anio": [2025, 2026, 2027], "pronostico": pred})
-                combined = pd.concat([
-                    s[["anio", "valor"]].rename(columns={"valor": "pronostico"}),
-                    forecast,
-                ])
-                fig = px.line(combined, x="anio", y="pronostico", markers=True)
-                st.plotly_chart(fig, use_container_width=True)
+            # CORRECCIÓN: Usamos dos gráficos separados porque las escalas son muy diferentes
+            st.subheader("Generación Total (GW·h)")
+            fig_total = px.line(onei, x="anio", y="gen_total_gwh", markers=True, color_discrete_sequence=['#2a6f97'])
+            st.plotly_chart(fig_total, use_container_width=True)
+            
+            st.subheader("Generación Fotovoltaica (GW·h)")
+            fig_fv = px.line(onei, x="anio", y="gen_fv_gwh", markers=True, color_discrete_sequence=['#f4a900'])
+            st.plotly_chart(fig_fv, use_container_width=True)
+            
+            st.info("Nota: La generación total cayó drásticamente (-17%), mientras la FV se mantuvo estable.")
+        else:
+            st.info("No hay datos de la ONEI.")
 
-    with tab6:
-        st.header("Optimización de almacenamiento")
-        st.info("Simulador: ajusta capacidad de batería para maximizar autoconsumo.")
-        st.write("(Disponible cuando se implemente `optimizacion.py`)")
+    # --- TAB 3: CORRELACIONES (NASA) ---
+    with tab3:
+        st.header("El impacto del clima (NASA)")
+        if not nasa.empty and not onei.empty:
+            # 1. Agrupar NASA por año
+            nasa_anual = nasa.groupby('anio').agg({
+                'irradiancia_kwh_m2': 'mean',
+                'temperatura_c': 'mean'
+            }).reset_index()
+            
+            # 2. Cruzar con ONEI
+            df_corr = onei.merge(nasa_anual, on='anio')
+            
+            st.subheader("Relación: Irradiancia vs Generación Total")
+            fig4 = px.scatter(df_corr, x="irradiancia_kwh_m2", y="gen_total_gwh", 
+                              text="anio", size=[100]*len(df_corr), color_discrete_sequence=['#2ca02c'])
+            fig4.update_traces(textposition='top center')
+            st.plotly_chart(fig4, use_container_width=True)
+            
+            st.subheader("Temperatura Promedio por Mes (2020-2024)")
+            # CORRECCIÓN: Ordenar los meses cronológicamente para que no se vea desordenado
+            meses = ['JAN', 'FEB', 'MAR', 'APR', 'MAY', 'JUN', 'JUL', 'AUG', 'SEP', 'OCT', 'NOV', 'DEC']
+            nasa['mes'] = pd.Categorical(nasa['mes'], categories=meses, ordered=True)
+            nasa_mes = nasa.groupby('mes', observed=True).mean(numeric_only=True).reset_index()
+            
+            fig5 = px.bar(nasa_mes, x="mes", y="temperatura_c", color_discrete_sequence=['#d62728'])
+            st.plotly_chart(fig5, use_container_width=True)
+        else:
+            st.info("Faltan datos de la NASA o la ONEI para hacer la correlación.")
 
-    with tab7:
-        st.header("Datos crudos")
+    # --- TAB 4: TABLA DE DATOS ---
+    with tab4:
+        st.header("Dataset Consolidado")
         if not df.empty:
             st.dataframe(df)
-            csv = df.to_csv(index=False).encode("utf-8")
-            st.download_button("Descargar CSV", csv, "datos_filtrados.csv", "text/csv")
+            csv = df.to_csv(index=False).encode('utf-8')
+            st.download_button("📥 Descargar CSV", csv, "datos_cuba.csv", "text/csv")
         else:
-            st.info("No hay encuestas cargadas aún.")
-
-    st.sidebar.markdown("---")
-    st.sidebar.markdown("**Proyecto académico — 2026**")
-
+            st.info("No hay datos para mostrar.")
 
 if __name__ == "__main__":
     main()
