@@ -1,55 +1,30 @@
-"""Correlaciones de Spearman entre variables numéricas."""
+"""Calcula correlaciones entre el clima y la energía."""
 from pathlib import Path
 import pandas as pd
 from scipy.stats import spearmanr
 
-DATA = Path("data")
+DATA = Path(__file__).parent.parent / "data"
 CLEAN = DATA / "clean"
 OUT = DATA / "analisis"
 OUT.mkdir(parents=True, exist_ok=True)
 
-
 def generar_correlaciones():
-    f = CLEAN / "encuestas_consolidadas.parquet"
-    if not f.exists():
-        print("[WARN] No existe encuestas_consolidadas.parquet")
-        return
-    df = pd.read_parquet(f)
+    onei = pd.read_parquet(CLEAN / "onei_generacion.parquet")
+    nasa = pd.read_parquet(CLEAN / "nasa_power_limpio.parquet")
 
-    cols = [
-        "potencia_pico_kwp", "num_paneles", "capacidad_baterias_kwh",
-        "consumo_total_anual_kwh", "pr_promedio", "satisfaccion",
-        "kwh_por_kwp", "antiguedad_anios", "ratio_bateria_panel",
-    ]
-    cols = [c for c in cols if c in df.columns and df[c].notna().sum() >= 5]
-    if len(cols) < 2:
-        print("[WARN] Muy pocas columnas numéricas.")
-        return
+    # Agrupar NASA por año
+    nasa_anual = nasa.groupby('anio').mean(numeric_only=True).reset_index()
+    df = onei.merge(nasa_anual, on='anio')
 
-    sub = df[cols].dropna(thresh=len(cols) // 2)
-    if len(sub) < 5:
-        print("[WARN] Muy pocos datos completos.")
-        return
-
-    corr = sub.corr(method="spearman").round(3)
-    corr.to_csv(OUT / "correlaciones_spearman.csv")
-
+    # Correlacionar la generación con las variables climáticas
     pares = []
-    for i, a in enumerate(cols):
-        for b in cols[i + 1:]:
-            s2 = df[[a, b]].dropna()
-            if len(s2) >= 5:
-                r, p = spearmanr(s2[a], s2[b])
-                pares.append({
-                    "var_a": a, "var_b": b,
-                    "rho": round(r, 3), "p": round(p, 4),
-                    "n": len(s2), "significativo": p < 0.05,
-                })
-    pd.DataFrame(pares).sort_values("rho", key=abs, ascending=False)\
-        .to_csv(OUT / "correlaciones_pares.csv", index=False)
+    for var in ["irradiancia_kwh_m2", "temperatura_c", "humedad_pct"]:
+        if var in df.columns:
+            r, p = spearmanr(df["gen_fv_gwh"], df[var])
+            pares.append({"variable_climatica": var, "rho": round(r, 3), "p_valor": round(p, 4)})
 
-    print(f"OK Correlaciones sobre {len(sub)} registros completos.")
-
+    pd.DataFrame(pares).to_csv(OUT / "correlaciones_clima.csv", index=False)
+    print("✅ OK Correlaciones guardadas en data/analisis/")
 
 if __name__ == "__main__":
     generar_correlaciones()
