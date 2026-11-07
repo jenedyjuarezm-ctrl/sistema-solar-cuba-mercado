@@ -1,46 +1,31 @@
-# Proyecto sistemas de paneles solares en Cuba
+# 📉 Análisis de Datos: Transición Solar en Cuba (2020-2026)
 
-## Descripción 
- Analísis del desarrollo e impacto de los sistemas de la energia solar fotovoltaica en Cuba durante el período 2020-2026, con enfoque en capacidad instalada, la eficiencia tecnica , entre otros factores a analizar
+**Autor:** [Tu Nombre]
+**Materia:** Ciencia de Datos (Primer Proyecto)
 
- ## Autora 
- Jenedy - Estudiante de 1er año de Ciencia de Datos 
+##  Resumen del Proyecto
+Este repositorio contiene el pipeline de datos (ETL), los análisis estadísticos, los cuadernos de Jupyter y el Dashboard interactivo desarrollados para investigar la crisis energética en Cuba y la respuesta ciudadana mediante paneles solares. El estudio triangula datos oficiales de la ONEI, datos climáticos de la NASA, registros OSINT y 32 entrevistas primarias validadas.
 
- ## Estado
- Fase 1: Diseño metodológico (completado)
- Fase 2: Captura de datos (proximámente)
+##  Resultados Principales
+*   **Paradoja de la Eficiencia:** La potencia FV instalada creció un 18.7% (2020-2022), pero la generación real cayó un 7.4%.
+*   **Brecha de Transparencia:** El 90% de los centros estatales negaron datos, en contraste con la apertura del sector privado y residencial.
+*   **Motivación Ciudadana:** El 100% de los 32 residentes encuestados afirmó que su motivación no fue el ahorro, sino la **supervivencia** ante los apagones.
 
-## Objetivos
- 1. Analizar la evolución de la capacidad instalada 
- 2. Identificar factores que influyen en la eficiencia
- 3. Analizar costos y retorno de inversión 
- 4. Comparar regiones según potencial solar
- 
-## Estructura del repositorio 
-- ´data´/raw - datasets originales 
-- ´data´/clean - datasets procesados
-- ´docs´ - documentación
-- ´journal´ - bitácora diaria 
-- ´notebooks´ - analísis en python
-- ´scripts´ - código python auxiliar
-- ´AGENTS.md´ - reglas para el agente IA
+👉 **[Haz clic aquí para leer el Informe Técnico Final en PDF](docs/Informe_Tecnico_Final_Cuba_Solar_2026.pdf)**
 
-## Herramientas 
-- VS Code (editor)
-- Python - Anaconda
-- Git - GitHub 
-- Open Code
+## 📊 Visualizaciones Clave
+![Gráfica 1: Crisis ONEI](docs/img/grafica_1_onei.png)
+![Gráfica 2: Potencia por Sector](docs/img/grafica_2_potencia.png)
+![Gráfica 4: Motivaciones](docs/img/grafica_4_motivaciones.png)
 
-## Metodología 
-Enfoque mixto : (cuantitativo y cualitativo) con alcance descriptivo-exploratorio
+## ⚙️ Estructura del Repositorio
+*   `data/`: Datos crudos (JSONL) y resultados limpios (CSV).
+*   `solineras/`: Código fuente en Python (Scripts ETL y Dashboard).
+*   `notebooks/`: Cuadernos de Jupyter con el análisis exploratorio.
+*   `evidencias/`: Fotos de etiquetas de equipos (validación de datos).
+*   `docs/`: Informe final en PDF, documentación y gráficas.
 
-
-## Ética 
-- Cita rigurosa de fuentes 
-- Protección de datos personales (Confidencialidad)
-- Transparencia metodológica
-
-## Licencia 
-Proyecto académico - uso educativo 
-
-Última actualización 2026-10-08
+## 🚀 Cómo ejecutar el pipeline
+1. Instalar dependencias: `pip install -r requirements.txt`
+2. Ejecutar el pipeline ETL y de análisis: `python solineras/run_all.py`
+3. Abrir el Dashboard interactivo: `streamlit run solineras/dashboard.py`
